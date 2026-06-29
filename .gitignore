@@ -1,0 +1,14 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+venv/
+env/
+
+# Large raw data files (exceed GitHub's 25MB file limit)
+data/raw/games.csv
+
+# OS
+.DS_Store
+Thumbs.db

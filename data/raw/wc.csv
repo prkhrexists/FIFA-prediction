@@ -1,0 +1,49 @@
+team_id,team_name,group,matches_played,wins,draws,losses,goals_scored,goals_conceded,goal_difference,points,group_rank,qualified_status
+MEX,Mexico,A,3,3,0,0,8,2,6,9,1,Qualified_Winner
+RSA,South Africa,A,3,1,1,1,1,2,-1,4,2,Qualified_RunnerUp
+KOR,South Korea,A,3,1,0,2,2,3,-1,3,3,Eliminated
+CZE,Czechia,A,3,0,1,2,1,5,-4,1,4,Eliminated
+SUI,Switzerland,B,3,2,1,0,6,2,4,7,1,Qualified_Winner
+CAN,Canada,B,3,1,1,1,7,2,5,4,2,Qualified_RunnerUp
+BIH,Bosnia and Herzegovina,B,3,1,1,1,4,5,-1,4,3,Qualified_Best3rd
+QAT,Qatar,B,3,0,1,2,2,10,-8,1,4,Eliminated
+BRA,Brazil,C,3,2,1,0,8,2,6,7,1,Qualified_Winner
+MAR,Morocco,C,3,2,1,0,6,3,3,7,2,Qualified_RunnerUp
+SCO,Scotland,C,3,1,0,2,2,5,-3,3,3,Eliminated
+HAI,Haiti,C,3,0,0,3,2,8,-6,0,4,Eliminated
+USA,United States,D,3,2,0,1,6,2,4,6,1,Qualified_Winner
+AUS,Australia,D,3,1,1,1,2,2,0,4,2,Qualified_RunnerUp
+PAR,Paraguay,D,3,1,1,1,3,5,-2,4,3,Qualified_Best3rd
+TUR,Türkiye,D,3,1,0,2,1,3,-2,3,4,Eliminated
+GER,Germany,E,3,2,0,1,9,3,6,6,1,Qualified_Winner
+CIV,Ivory Coast,E,3,2,0,1,4,2,2,6,2,Qualified_RunnerUp
+ECU,Ecuador,E,3,1,1,1,2,2,0,4,3,Qualified_Best3rd
+CUW,Curaçao,E,3,0,1,2,2,10,-8,1,4,Eliminated
+NED,Netherlands,F,3,2,1,0,9,3,6,7,1,Qualified_Winner
+JPN,Japan,F,3,1,2,0,7,3,4,5,2,Qualified_RunnerUp
+SWE,Sweden,F,3,1,1,1,5,5,0,4,3,Qualified_Best3rd
+TUN,Tunisia,F,3,0,0,3,1,11,-10,0,4,Eliminated
+BEL,Belgium,G,3,1,2,0,4,1,3,5,1,Qualified_Winner
+EGY,Egypt,G,3,1,2,0,4,2,2,5,2,Qualified_RunnerUp
+IRN,Iran,G,3,0,3,0,2,2,0,3,3,Eliminated
+NZL,New Zealand,G,3,0,1,2,3,8,-5,1,4,Eliminated
+ESP,Spain,H,3,2,1,0,6,1,5,7,1,Qualified_Winner
+CPV,Cape Verde,H,3,1,1,1,3,3,0,3,2,Qualified_RunnerUp
+URU,Uruguay,H,3,0,2,1,4,5,-1,2,3,Eliminated
+KSA,Saudi Arabia,H,3,0,2,1,2,6,-4,1,4,Eliminated
+FRA,France,I,3,3,0,0,10,2,8,9,1,Qualified_Winner
+NOR,Norway,I,3,2,0,1,5,4,1,6,2,Qualified_RunnerUp
+SEN,Senegal,I,3,0,0,3,3,6,-3,0,3,Qualified_Best3rd
+IRQ,Iraq,I,3,0,0,3,1,7,-6,0,4,Eliminated
+ARG,Argentina,J,3,3,0,0,8,1,5,9,1,Qualified_Winner
+AUT,Austria,J,3,1,1,1,6,6,0,4,2,Qualified_RunnerUp
+ALG,Algeria,J,3,1,1,1,6,8,-2,4,3,Qualified_Best3rd
+JOR,Jordan,J,3,0,0,3,3,6,-3,0,4,Eliminated
+COL,Colombia,K,3,2,1,0,5,2,3,7,1,Qualified_Winner
+POR,Portugal,K,3,1,1,1,7,2,5,4,2,Qualified_RunnerUp
+COD,DR Congo,K,3,1,1,1,3,2,1,4,3,Qualified_Best3rd
+UZB,Uzbekistan,K,3,0,1,2,2,9,-7,1,4,Eliminated
+ENG,England,L,3,2,1,0,6,2,4,7,1,Qualified_Winner
+CRO,Croatia,L,3,2,0,1,4,4,0,6,2,Qualified_RunnerUp
+GHA,Ghana,L,3,1,1,1,2,2,0,4,3,Qualified_Best3rd
+PAN,Panama,L,3,0,0,3,0,4,-4,0,4,Eliminated
