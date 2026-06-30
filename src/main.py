@@ -1,16 +1,3 @@
-
-# ============================================================
-# FIFA WORLD CUP 2026 — KNOCKOUT STAGE PREDICTOR
-# ============================================================
-# Predicts:
-#   1. Championship probability for all 32 teams (Monte Carlo)
-#   2. Most likely winner for every match until the Final
-#   3. Saves results as a JPG chart + CSV
-#
-# Model: Poisson goals model (attack/defense stats) blended
-#        with FIFA ratings for team quality.
-# ============================================================
-
 import pandas as pd
 import numpy as np
 import math
@@ -21,9 +8,7 @@ import warnings
 from collections import defaultdict
 warnings.filterwarnings('ignore')
 
-# ============================================================
 # SECTION 1: FILE PATHS
-# ============================================================
 BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 PROJECT_ROOT = os.path.dirname(BASE_DIR)
 
@@ -32,9 +17,7 @@ FIFA_CSV    = r'C:\Users\tusha\OneDrive\Desktop\Projects\fifa-predictor\data\raw
 OUTPUT_DIR  = os.path.join(PROJECT_ROOT, 'output')
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-# ============================================================
 # SECTION 2: TEAM NAME NORMALIZATION
-# ============================================================
 NAME_MAP = {
     'United States':                'USA',
     'United States of America':     'USA',
@@ -65,9 +48,7 @@ def normalize(name):
     name = str(name).strip()
     return NAME_MAP.get(name, name)
 
-# ============================================================
 # SECTION 3: LOAD MATCH HISTORY
-# ============================================================
 print("=" * 55)
 print("  FIFA WC 2026 KNOCKOUT STAGE PREDICTOR")
 print("=" * 55)
@@ -89,9 +70,7 @@ df_modern = df_modern.dropna(subset=['home_score', 'away_score'])
 df_modern = df_modern.sort_values('date').reset_index(drop=True)
 print(f"  Loaded {len(df_modern):,} completed matches (2020-present)")
 
-# ============================================================
 # SECTION 4: TOURNAMENT IMPORTANCE WEIGHTS
-# ============================================================
 # World Cup matches count more than friendlies when computing stats.
 WEIGHTS = {
     'FIFA World Cup':                       3.0,
@@ -115,16 +94,12 @@ def get_weight(t):
 
 df_modern['weight'] = df_modern['tournament'].apply(get_weight)
 
-# ============================================================
 # SECTION 5: GLOBAL AVERAGE GOALS (the model baseline)
-# ============================================================
 last500 = df_modern.tail(500)
 GLOBAL_AVG = (last500['home_score'].mean() + last500['away_score'].mean()) / 2
 print(f"  Global avg goals per team per match: {GLOBAL_AVG:.3f}")
 
-# ============================================================
 # SECTION 6: COMPUTE TEAM STATS (attack & defense)
-# ============================================================
 def compute_features(team, df, global_avg, last_n=20):
     """
     Computes two key stats from a team's last N matches:
@@ -174,9 +149,7 @@ def compute_features(team, df, global_avg, last_n=20):
 
     return att, dfw
 
-# ============================================================
 # SECTION 7: LOAD FIFA RATINGS (team quality measure)
-# ============================================================
 print("\nStep 2: Loading FIFA ratings...")
 
 def load_fifa_ratings(filepath):
@@ -227,11 +200,7 @@ def get_elo(team):
     """Return team's Elo-like rating (default 1500 if unknown)."""
     return ELO.get(team, 1500)
 
-# ============================================================
 # SECTION 8: THE OFFICIAL WC 2026 ROUND OF 32 BRACKET
-# ============================================================
-# Source: Official FIFA WC 2026 bracket (June 28 - July 3, 2026)
-# Canada already beat South Africa 1-0 (Match 73) — result is locked in.
 
 # Format: (team1, team2, match_number)
 LEFT_BRACKET = [
@@ -258,7 +227,10 @@ RIGHT_BRACKET = [
 
 # Known match results (already played)
 KNOWN_RESULTS = {
-    73: 'Canada',   # Canada beat South Africa 1–0
+    73: 'Canada',    # Canada beat South Africa 1–0
+    75: 'Paraguay',  # Paraguay beat Germany 4–3 on penalties (1–1 AET)
+    81: 'Brazil',    # Brazil beat Japan 2–1
+    82: 'Morocco',   # Morocco beat Netherlands 3–2 on penalties (1–1 AET)
 }
 
 # All 32 teams
@@ -269,9 +241,7 @@ ALL_TEAMS = sorted(set(
     for team in (t1, t2)
 ))
 
-# ============================================================
 # SECTION 9: BUILD FEATURE TABLE FOR ALL 32 TEAMS
-# ============================================================
 print("\nStep 3: Computing team features from match history...")
 print(f"\n  {'Team':<28} {'Attack':>7} {'Defense':>9} {'FIFA Elo':>9}")
 print("  " + "-" * 58)
@@ -283,9 +253,7 @@ for team in sorted(ALL_TEAMS):
     FEATURES[team] = (att, dfw)
     print(f"  {team:<28} {att:>7.3f} {dfw:>9.3f} {elo:>9.0f}")
 
-# ============================================================
 # SECTION 10: POISSON MATCH PREDICTION
-# ============================================================
 def poisson_prob(k, lam):
     """
     Probability of scoring exactly k goals when average = lam.
@@ -343,10 +311,7 @@ def predict_match(team1, team2):
     b2  = rem * (p2_wins / dt) if dt > 0 else rem
 
     return b1, bd, b2, lam1, lam2
-
-# ============================================================
 # SECTION 11: SIMULATE ONE KNOCKOUT MATCH
-# ============================================================
 def simulate_match(team1, team2):
     """
     Randomly picks a winner for one knockout match.
@@ -356,9 +321,7 @@ def simulate_match(team1, team2):
     p1_ko = p1 + pd_ / 2    # team1's chance of winning (includes half the draw prob)
     return team1 if random.random() < p1_ko else team2
 
-# ============================================================
 # SECTION 12: SIMULATE ONE FULL TOURNAMENT
-# ============================================================
 def simulate_tournament():
     """
     Plays through the entire WC 2026 knockout bracket once.
@@ -377,7 +340,12 @@ def simulate_tournament():
         else:
             left_r32_winners.append(simulate_match(t1, t2))
 
-    right_r32_winners = [simulate_match(t1, t2) for t1, t2, _ in RIGHT_BRACKET]
+    right_r32_winners = []
+    for t1, t2, mid in RIGHT_BRACKET:
+        if mid in KNOWN_RESULTS:
+            right_r32_winners.append(KNOWN_RESULTS[mid])
+        else:
+            right_r32_winners.append(simulate_match(t1, t2))
 
     # --- Round of 16 (pair up winners: 0v1, 2v3, etc.) ---
     def pair_winners(winners):
@@ -398,9 +366,7 @@ def simulate_tournament():
     champion = simulate_match(left_sf, right_sf)
     return champion
 
-# ============================================================
 # SECTION 13: RUN MONTE CARLO (10,000 tournaments)
-# ============================================================
 N_SIMS = 10000
 print(f"\nStep 4: Running {N_SIMS:,} Monte Carlo simulations...")
 
@@ -420,9 +386,7 @@ results = sorted(
     key=lambda x: x['prob'], reverse=True
 )
 
-# ============================================================
 # SECTION 14: DISPLAY CHAMPIONSHIP PROBABILITIES
-# ============================================================
 print("\n")
 print("=" * 58)
 print("  FIFA WC 2026 — CHAMPIONSHIP PROBABILITIES")
@@ -435,9 +399,7 @@ for rank, r in enumerate(results, 1):
     print(f"  {rank:<5} {r['team']:<26} {r['prob']:>6.2f}%  {bar}")
 print("  " + "-" * 55)
 
-# ============================================================
 # SECTION 15: PREDICT MOST LIKELY WINNER FOR EVERY MATCH
-# ============================================================
 print("\n")
 print("=" * 70)
 print("  PREDICTED MATCH-BY-MATCH BRACKET PATH")
@@ -478,7 +440,8 @@ for t1, t2, mid in LEFT_BRACKET:
 
 for t1, t2, mid in RIGHT_BRACKET:
     w, p = likely_winner(t1, t2, mid)
-    print_match(f"M{mid}", t1, t2, w, p)
+    note = "PLAYED" if mid in KNOWN_RESULTS else ""
+    print_match(f"M{mid}", t1, t2, w, p, note)
     right_likely.append(w)
 
 # --- Round of 16 ---
@@ -525,9 +488,7 @@ print(f"\n  *** PREDICTED CHAMPION: {fin_w.upper()} ***")
 print(f"  (Predicted win probability in the Final: {fin_p:.1%})")
 print()
 
-# ============================================================
 # SECTION 16: GENERATE RESULTS CHART (JPG)
-# ============================================================
 print("Step 5: Generating results chart...")
 
 try:
@@ -616,7 +577,6 @@ except ImportError:
     print("  matplotlib not installed. Install with:  pip install matplotlib")
     print("  Skipping chart generation.")
 
-# ============================================================
 # SECTION 17: SAVE CSV
 # ============================================================
 csv_path = os.path.join(OUTPUT_DIR, 'wc2026_predictions.csv')
